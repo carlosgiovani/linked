@@ -1,31 +1,5 @@
 <p>Lista cards</p>
 
-<!-- {{ getTask$() | json }} -->
-
-<!-- <div *ngFor="let item of cards">
-  {{ item.name }}
-</div> -->
-
-<!-- <div *ngIf="isLoading">Loading cards...</div>
-<div *ngIf="error">Error: {{ error }}</div>
-<div>
-  <h2>MTG Cards</h2>
-  <ul>
-    <li *ngFor="let card of cards">
-      <h3>{{ card.name }}</h3>
-      <p>
-        Mana Cost: {{ card.manaCost }}<br />
-        CMC: {{ card.cmc }}
-      </p>
-    </li>
-  </ul>
-</div> -->
-
-<!-- @for (post of posts; track posts.id) {
-{{ post.id }} <br />
-{{ post.name }}<br />
-<br />
-} -->
 @for (card of cards.cards; track cards.id) {
 {{ card.id }} <br />
 {{ card.name }}<br />
