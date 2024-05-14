@@ -1,0 +1,12 @@
+.linked-container:after,.linked-container:before,.linked-panel:after,.linked-panel:before,.linked-row:after,.linked-row:before,.linked-row-padding:after,.linked-row-padding:before, .linked-cell-row:before,.linked-cell-row:after,.linked-clear:after,.linked-clear:before,.linked-bar:before,.linked-bar:after{
+  content:"";
+  display:table;
+  clear:both
+}
+.linked-input{
+  padding:8px;
+  display:block;
+  border:none;
+  border-bottom:1px solid #ccc;
+  width:100%
+}

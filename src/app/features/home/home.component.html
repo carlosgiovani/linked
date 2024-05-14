@@ -1,10 +1,127 @@
 <p>Lista cards</p>
+<!-- (keyup)="filtrarLista($event.target.value)" -->
+<form class="linked-container">
+  <mat-form-field class="example-form-field">
+    <mat-label>Nome</mat-label>
+    <input
+      matInput
+      type="text"
+      name="first"
+      [(ngModel)]="inputValue"
+      (keyup)="applyFilter($event)"
+      #input
+    />
+  </mat-form-field>
 
-@for (card of cards.cards; track cards.id) {
+  <mat-form-field>
+    <mat-label>Selecionar</mat-label>
+    <mat-select [(ngModel)]="selectedValue" name="food">
+      @for (food of foods; track food) {
+      <mat-option [value]="food.value">{{ food.viewValue }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button mat-flat-button color="primary" (click)="searchCard()">Buscar</button>
+  <p>Input: {{ inputValue }}</p>
+  <p>Selected food: {{ selectedValue }}</p>
+</form>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+  <!-- Position Column -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="manaCost">
+    <th mat-header-cell *matHeaderCellDef>ManaCost</th>
+    <td mat-cell *matCellDef="let element">{{ element.manaCost }}</td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="power">
+    <th mat-header-cell *matHeaderCellDef>Power</th>
+    <td mat-cell *matCellDef="let element">{{ element.power }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplay"></tr>
+
+  <!-- Row shown when there is no matching data. -->
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">
+      <!-- No data matching the filter "{{ input.value }}" -->
+      No data matching the filter
+    </td>
+  </tr>
+</table>
+
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Select page of users"
+></mat-paginator>
+
+<br />
+<br />
+<!--
+<input
+  class="w3-input w3-border w3-padding"
+  type="text"
+  placeholder="Search for names.."
+  id="myInput"
+  onkeyup="myFunction()"
+/>
+
+<table class="w3-table-all w3-margin-top" id="myTable">
+  <tr>
+    <th style="width: 60%">Name</th>
+    <th style="width: 40%">Country</th>
+  </tr>
+  <tr>
+    <td>Alfreds Futterkiste</td>
+    <td>Germany</td>
+  </tr>
+  <tr>
+    <td>Berglunds snabbkop</td>
+    <td>Sweden</td>
+  </tr>
+  <tr>
+    <td>Island Trading</td>
+    <td>UK</td>
+  </tr>
+  <tr>
+    <td>Koniglich Essen</td>
+    <td>Germany</td>
+  </tr>
+  <tr>
+    <td>Laughing Bacchus Winecellars</td>
+    <td>Canada</td>
+  </tr>
+  <tr>
+    <td>Magazzini Alimentari Riuniti</td>
+    <td>Italy</td>
+  </tr>
+  <tr>
+    <td>North/South</td>
+    <td>UK</td>
+  </tr>
+  <tr>
+    <td>Paris specialites</td>
+    <td>France</td>
+  </tr>
+</table> -->
+
+<!-- @for (card of cards.cards; track cards.id) {
 {{ card.id }} <br />
 {{ card.name }}<br />
-<img [src]="'card.imageUrl'" /><br />
 {{ card.artist }}<br />
 {{ card.manaCost }}<br />
 <br />
-}
+} -->
