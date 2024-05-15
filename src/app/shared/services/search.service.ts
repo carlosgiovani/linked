@@ -86,6 +86,10 @@ export class SearchService {
     };
   }
 
+  getCardsId(id: string): Observable<Array<ICards[]>> {
+    return this.http.get<Array<ICards[]>>(`this.api/${id}`);
+  }
+
   // getSearch(): Observable<Cards[]> {
   //   const url = this.urlbase;
   //   return this.#http.get<Cards[]>(url);
@@ -95,16 +99,16 @@ export class SearchService {
   //   return this.#http.get<Cards>(this.#api()).pipe(shareReplay());
   // }
 
-  public getSearch$(): Observable<ICards[]> {
-    return this.#http.get<ICards[]>(this.#api()).pipe(
-      shareReplay(),
-      tap((res) => {
-        this.#setListTask.set(res);
-        let kards: ICards[] = res;
-        console.log('teste ', kards);
-      })
-    );
-  }
+  // public getSearch$(): Observable<ICards[]> {
+  //   return this.#http.get<ICards[]>(this.#api()).pipe(
+  //     shareReplay(),
+  //     tap((res) => {
+  //       this.#setListTask.set(res);
+  //       let kards: ICards[] = res;
+  //       console.log('teste ', kards);
+  //     })
+  //   );
+  // }
   // public getSearch$(): Observable<any> {
   //   return this.#http.get<any>(this.urlbase).pipe(shareReplay());
   // }
@@ -114,7 +118,7 @@ export class SearchService {
   //   return this.http.get<Cards[]>(url);
   // }
 
-  getCards2(): Observable<CardListModel> {
-    return this.http.get<CardListModel>(this.api);
-  }
+  // getCards2(): Observable<CardListModel> {
+  //   return this.http.get<CardListModel>(this.api);
+  // }
 }
