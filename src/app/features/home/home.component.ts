@@ -22,6 +22,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../../core/components/dialog/dialog.component';
 
 interface Food {
   value: string;
@@ -65,6 +67,7 @@ export interface PeriodicElement {
     MatPaginatorModule,
     MatSortModule,
     MatPaginatorModule,
+    MatDialogModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -78,7 +81,7 @@ export class HomeComponent implements OnInit {
 
   public getTask = signal<null | Array<ICards>>(null);
 
-  public getTask$ = toSignal(this.#searchService.getSearch$());
+  // public getTask$ = toSignal(this.#searchService.getSearch$());
 
   public getListTask = this.#searchService.getListTask;
 
@@ -103,14 +106,15 @@ export class HomeComponent implements OnInit {
 
   // myDataArray!: ICards[];
 
-  displayedColumns: string[] = ['id', 'name', 'manaCost', 'power'];
-  columnsToDisplay: string[] = ['id', 'name', 'manaCost', 'power'];
+  displayedColumns: string[] = ['id', 'name', 'manaCost', 'power', 'acao'];
+  columnsToDisplay: string[] = ['id', 'name', 'manaCost', 'power', 'acao'];
   // dataSource = new MatTableDataSource(ELEMENT_DATA);
   // dataSource: MatTableDataSource<any> = new MatTableDataSource();
   dataSource: any;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(DialogComponent) userDialog!: DialogComponent;
 
   // pesquisar() {
   //   console.log('Pesquisando:', this.inputValue);
@@ -122,7 +126,7 @@ export class HomeComponent implements OnInit {
 
   //==============
 
-  constructor(private searchService: SearchService) {}
+  constructor(private searchService: SearchService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.loadTableData();
@@ -156,7 +160,7 @@ export class HomeComponent implements OnInit {
     // });
 
     //======================
-    this.#searchService.getSearch$().subscribe();
+    // this.#searchService.getSearch$().subscribe();
 
     // this.searchService.getCards().subscribe((res: any) => {
     //   (this.cards = res), console.log('Next 6: ', this.cards);
@@ -205,6 +209,25 @@ export class HomeComponent implements OnInit {
     console.log('Opção selecionada:', this.selectedValue);
     console.log('Opção: ', this.cards);
   }
+
+  openDialog(id: ICards) {
+    this.dialog
+      .open(DialogComponent, {
+        data: id,
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          console.log('dialog ', result);
+        }
+      });
+    // const dialogRef = this.dialog.open(DialogComponent);
+
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   console.log(`Dialog result: ${result}`);
+    // });
+  }
+
   // filtrarLista(valor: string): void {
   //   // Aplica o filtro à lista de nomes
   //   // Por exemplo, filtra os nomes que contêm o valor digitado
