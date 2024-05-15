@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ICards } from './interfaces/cards';
+import { ICards } from './interfaces/cards.model';
 import { SearchService } from '../../shared/services/search.service';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -24,6 +24,10 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../core/components/dialog/dialog.component';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ISets } from './interfaces/sets.model';
 
 interface Food {
   value: string;
@@ -68,6 +72,8 @@ export interface PeriodicElement {
     MatSortModule,
     MatPaginatorModule,
     MatDialogModule,
+    MatCardModule,
+    MatExpansionModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -86,7 +92,7 @@ export class HomeComponent implements OnInit {
   public getListTask = this.#searchService.getListTask;
 
   //===========================================
-  cards: any = [];
+  listCards: any = [];
   isLoading = false;
   error: string | null = null;
 
@@ -101,6 +107,8 @@ export class HomeComponent implements OnInit {
 
   inputValue: string = '';
   allCards!: any[];
+
+  setCards: any = [];
 
   // cards$!: Observable<ICards[]>;
 
@@ -130,6 +138,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTableData();
+    this.searchCard();
     //====================
     // this.isLoading = true;
     // this.searchService.getCards().subscribe(
@@ -186,10 +195,8 @@ export class HomeComponent implements OnInit {
   loadTableData(): void {
     this.searchService.getCards().subscribe({
       next: (data) => {
-        this.cards = data;
-        // this.allCards = data;
-        this.dataSource = new MatTableDataSource(this.cards.cards);
-        console.log('chamada ', this.dataSource);
+        this.listCards = data;
+        this.dataSource = new MatTableDataSource(this.listCards.cards);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -205,9 +212,21 @@ export class HomeComponent implements OnInit {
   }
 
   searchCard(): void {
-    console.log('Nome digitado:', this.inputValue);
-    console.log('Opção selecionada:', this.selectedValue);
-    console.log('Opção: ', this.cards);
+    // console.log('Nome digitado:', name);
+    // console.log('Opção selecionada:', origin);
+    // console.log('Opção: ', this.cards);
+    // this.inputValue = 'chorus';
+    // this.selectedValue = 'Zendikar';
+    this.searchService
+      .getSearch(this.inputValue, this.selectedValue)
+      .subscribe({
+        next: (res) => {
+          (this.setCards = res),
+            console.log('retorno => ', this.setCards.sets),
+            console.log('itens ', this.inputValue + ' - ' + this.selectedValue);
+        },
+        error: (error) => console.log('Erro: ', error),
+      });
   }
 
   openDialog(id: ICards) {
