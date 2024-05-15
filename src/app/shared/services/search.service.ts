@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, shareReplay, tap, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CardListModel } from '../../features/home/interfaces/card-list.model';
+import { ISets } from '../../features/home/interfaces/sets.model';
 
 export interface ICards {
   name: string;
@@ -61,15 +62,21 @@ export class SearchService {
   #http = inject(HttpClient);
   #api = signal(environment.urlApi);
   api = environment.urlApi;
+  apiSearch = environment.urlApiSearch;
 
   #setListTask = signal<ICards[] | null>(null);
   public getListTask = this.#setListTask.asReadonly();
 
   // urlbase = environment.urlApi;
-  urlbase =
-    'https://us-central1-curso-de-angular-api.cloudfunctions.net/app/tasks/';
+  // urlbase =
+  //   'https://us-central1-curso-de-angular-api.cloudfunctions.net/app/tasks/';
 
   constructor(private http: HttpClient) {}
+
+  getSearch(name: string, origin: string): Observable<Array<ISets>> {
+    const url = `https://api.magicthegathering.io/v1/sets?name=${name}|${origin}`;
+    return this.http.get<Array<ISets>>(url);
+  }
 
   getCards(): Observable<Array<ICards[]>> {
     return this.http

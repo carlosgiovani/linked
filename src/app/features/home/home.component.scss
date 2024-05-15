@@ -10,3 +10,21 @@
   border-bottom:1px solid #ccc;
   width:100%
 }
+
+//Expansion Panel
+.linked-action-buttons {
+  padding-bottom: 20px;
+}
+
+.linked-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.linked-headers-align .mat-mdc-form-field + .mat-mdc-form-field {
+  margin-left: 8px;
+}
+
+.linked-card {
+  max-width: 400px;
+}
