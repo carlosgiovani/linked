@@ -4,9 +4,14 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 // import { ICards } from '../../features/home/interfaces/cards';
 import { Observable, shareReplay, tap, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, toArray } from 'rxjs/operators';
 import { CardListModel } from '../../features/home/interfaces/card-list.model';
 import { ISets } from '../../features/home/interfaces/sets.model';
+import { rejects } from 'assert';
+import {
+  Card,
+  ISetCreature,
+} from '../../features/home/interfaces/setCreature.model';
 
 export interface ICards {
   name: string;
@@ -63,6 +68,7 @@ export class SearchService {
   #api = signal(environment.urlApi);
   api = environment.urlApi;
   apiSearch = environment.urlApiSearch;
+  apiSetCreature = environment.urlSetCreature;
 
   #setListTask = signal<ICards[] | null>(null);
   public getListTask = this.#setListTask.asReadonly();
@@ -92,6 +98,63 @@ export class SearchService {
       return of(result as T);
     };
   }
+
+  // getCardsCreature() {
+  //   let cards: any[] = []
+  //   let totalCards = 0
+
+  //   const fetchCards = (nextPageUrl?: string) => {
+  //     this.http.get(nextPageUrl || this.apiSetCreature).subscribe(response => {
+  //       cards = cards.concat(response.cards.filter(card => card.types.includes('creature')))
+  //       totalCards += response.cards.length;
+
+  //       if(totalCards < 30 && response.next_page) {
+  //         fetchCards(response.next_page)
+  //       }
+  //     })
+  //   }
+  //   fetchCards();
+
+  //   return new Promise((resolve, reject) => {
+  //     setTimeout(() => resolve(cards), 1000)
+  //   })
+  // }
+
+  getCardsCreature(): Observable<ISetCreature[]> {
+    return this.http
+      .get<ISetCreature[]>(this.apiSetCreature)
+      .pipe(catchError(this.handleError<ISetCreature[]>('getCardsCreature')));
+  }
+
+  // fetchCreatureCards(): Observable<ISetCreature[]> {
+  //   return this.http.get<ISetCreature>(this.apiSetCreature).pipe(
+  //     map(response => response.cards),
+  //     mergeMap(cards => cards),
+  //     filter((card: ISetCreature) => card.types.includes('Creature')),
+  //     toArray(),
+  //     mergeMap(creatureCards => {
+  //       if (creatureCards.length >= 30) {
+  //         return of(creatureCards.slice(0, 30));
+  //       } else {
+  //         return this.fetchAdditionalCreatures(creatureCards);
+  //       }
+  //     })
+  //   );
+  // }
+
+  // private fetchAdditionalCreatures(currentCards: any[]): Observable<ISetCreature[]> {
+  //   if (currentCards.length >= 30) {
+  //     return of(currentCards.slice(0, 30));
+  //   } else {
+  //     return this.http.get<ISetCreature>(this.apiSetCreature).pipe(
+  //       map(response => response.cards),
+  //       mergeMap(cards => cards),
+  //       filter(card => card.types.includes('creature')),
+  //       toArray(),
+  //       mergeMap(newCards => this.fetchAdditionalCreatures([...currentCards, ...newCards]))
+  //     );
+  //   }
+  // }
 
   getCardsId(id: string): Observable<Array<ICards[]>> {
     return this.http.get<Array<ICards[]>>(`this.api/${id}`);

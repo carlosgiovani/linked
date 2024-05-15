@@ -5,6 +5,7 @@ import {
   ViewChild,
   inject,
   signal,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ICards } from './interfaces/cards.model';
 import { SearchService } from '../../shared/services/search.service';
@@ -26,7 +27,9 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../core/components/dialog/dialog.component';
 
 import { MatCardModule } from '@angular/material/card';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatExpansionModule, MatAccordion } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DatePipe } from '@angular/common';
 import { ISets } from './interfaces/sets.model';
 
 interface Food {
@@ -34,12 +37,12 @@ interface Food {
   viewValue: string;
 }
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
+// export interface PeriodicElement {
+//   name: string;
+//   position: number;
+//   weight: number;
+//   symbol: string;
+// }
 
 // const ELEMENT_DATA: PeriodicElement[] = [
 //   { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
@@ -74,6 +77,8 @@ export interface PeriodicElement {
     MatDialogModule,
     MatCardModule,
     MatExpansionModule,
+    DialogComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -94,9 +99,10 @@ export class HomeComponent implements OnInit {
   //===========================================
   listCards: any = [];
   isLoading = false;
+  loaded = false;
+  loadedCre = false;
   error: string | null = null;
 
-  selectedValue!: string;
   foods: Food[] = [
     { value: 'Amonkhet', viewValue: 'Amonkhet' },
     { value: 'Ixalan', viewValue: 'Ixalan' },
@@ -106,23 +112,30 @@ export class HomeComponent implements OnInit {
   ];
 
   inputValue: string = '';
-  allCards!: any[];
+  selectedValue: string = '';
+
+  // allCards!: any[];
 
   setCards: any = [];
+  cardsCreatures: any = [];
+  sizeSetCards: any;
+  originalDate!: string;
+  formattedDate!: string | null;
 
   // cards$!: Observable<ICards[]>;
 
   // myDataArray!: ICards[];
 
-  displayedColumns: string[] = ['id', 'name', 'manaCost', 'power', 'acao'];
-  columnsToDisplay: string[] = ['id', 'name', 'manaCost', 'power', 'acao'];
+  // displayedColumns: string[] = ['id', 'name', 'manaCost', 'power', 'acao'];
+  // columnsToDisplay: string[] = ['id', 'name', 'manaCost', 'power', 'acao'];
   // dataSource = new MatTableDataSource(ELEMENT_DATA);
   // dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  dataSource: any;
+  // dataSource: any;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  // @ViewChild(MatPaginator) paginator!: MatPaginator;
+  // @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(DialogComponent) userDialog!: DialogComponent;
+  @ViewChild(MatAccordion) accordion!: MatAccordion;
 
   // pesquisar() {
   //   console.log('Pesquisando:', this.inputValue);
@@ -134,11 +147,17 @@ export class HomeComponent implements OnInit {
 
   //==============
 
-  constructor(private searchService: SearchService, public dialog: MatDialog) {}
+  constructor(
+    private searchService: SearchService,
+    public dialog: MatDialog,
+    private cdRef: ChangeDetectorRef,
+    private cdRefCre: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.loadTableData();
-    this.searchCard();
+    // this.loadTableData();
+    // this.callSetCreature();
+    // this.searchCard();
     //====================
     // this.isLoading = true;
     // this.searchService.getCards().subscribe(
@@ -154,7 +173,6 @@ export class HomeComponent implements OnInit {
     //   }
     // );
     //==============================
-
     // this.isLoading = true;
     // this.searchService.getCards().subscribe({
     //   next: (cards) => {
@@ -167,10 +185,8 @@ export class HomeComponent implements OnInit {
     //     this.isLoading = false;
     //   },
     // });
-
     //======================
     // this.#searchService.getSearch$().subscribe();
-
     // this.searchService.getCards().subscribe((res: any) => {
     //   (this.cards = res), console.log('Next 6: ', this.cards);
     // });
@@ -183,50 +199,70 @@ export class HomeComponent implements OnInit {
     //   error: (error) => console.log('Erro: ', error),
     //   complete: () => console.log('complete!!'),
     // });
-
     //this.fetchPosts();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
+  // ngAfterViewInit() {
+  //   // this.dataSource.paginator = this.paginator;
+  //   // this.dataSource.sort = this.sort;
+  // }
 
-  loadTableData(): void {
-    this.searchService.getCards().subscribe({
-      next: (data) => {
-        this.listCards = data;
-        this.dataSource = new MatTableDataSource(this.listCards.cards);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      },
-      error: (error) => {
-        console.error('Erro ao carregar dados', error);
-      },
-    });
-  }
+  // loadTableData(): void {
+  //   this.searchService.getCards().subscribe({
+  //     next: (data) => {
+  //       this.listCards = data;
+  //       this.dataSource = new MatTableDataSource(this.listCards.cards);
+  //       // this.dataSource.paginator = this.paginator;
+  //       // this.dataSource.sort = this.sort;
+  //     },
+  //     error: (error) => {
+  //       console.error('Erro ao carregar dados', error);
+  //     },
+  //   });
+  // }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
+  // }
 
   searchCard(): void {
-    // console.log('Nome digitado:', name);
-    // console.log('Opção selecionada:', origin);
-    // console.log('Opção: ', this.cards);
-    // this.inputValue = 'chorus';
-    // this.selectedValue = 'Zendikar';
+    this.isLoading = true;
     this.searchService
       .getSearch(this.inputValue, this.selectedValue)
       .subscribe({
         next: (res) => {
           (this.setCards = res),
-            console.log('retorno => ', this.setCards.sets),
-            console.log('itens ', this.inputValue + ' - ' + this.selectedValue);
+            (this.sizeSetCards = this.setCards.sets.length);
+          this.cdRef.detectChanges();
+          this.loaded = true;
+          console.log('retorno => ', this.setCards.sets),
+            console.log('size => ', this.setCards.sets.length),
+            console.log('data ', this.formattedDate);
+          this.isLoading = false;
+          this.cdRef.detectChanges();
         },
-        error: (error) => console.log('Erro: ', error),
+        error: (error) => {
+          console.log('Erro: ', error), (this.isLoading = false);
+        },
       });
+  }
+
+  callSetCreature() {
+    this.isLoading = true;
+    this.searchService.getCardsCreature().subscribe({
+      next: (cards) => {
+        this.cardsCreatures = cards;
+        this.loadedCre = true;
+        // this.dataSource = this.cardsCreatures.cards;
+        // console.log('Creature cards:', this.dataSource);
+        this.isLoading = false;
+        this.cdRefCre.detectChanges();
+      },
+      error: (error) => {
+        console.log('Erro: ', error), (this.isLoading = false);
+      },
+    });
   }
 
   openDialog(id: ICards) {
