@@ -1,117 +1,210 @@
-<p>Lista cards</p>
-<!-- (keyup)="filtrarLista($event.target.value)" -->
-<form class="linked-container">
-  <mat-form-field class="example-form-field">
-    <mat-label>Nome</mat-label>
-    <input
-      matInput
-      type="text"
-      name="first"
-      [(ngModel)]="inputValue"
-      (keyup)="applyFilter($event)"
-      #input
-    />
-  </mat-form-field>
+<div class="linked-container mat-elevation-z888">
+  <p>Lista cards</p>
+  <mat-card>
+    <mat-card-content>
+      <form class="linked-container22">
+        <mat-form-field class="example-form-field">
+          <mat-label>Nome</mat-label>
+          <input
+            matInput
+            type="text"
+            name="first"
+            [(ngModel)]="inputValue"
+            #input
+          />
+        </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Selecionar</mat-label>
-    <mat-select [(ngModel)]="selectedValue" name="food">
-      @for (food of foods; track food) {
-      <mat-option [value]="food.value">{{ food.viewValue }}</mat-option>
+        <mat-form-field>
+          <mat-label>Selecionar</mat-label>
+          <mat-select [(ngModel)]="selectedValue" name="food">
+            @for (food of foods; track food) {
+            <mat-option [value]="food.value">{{ food.viewValue }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <button mat-flat-button color="primary" (click)="searchCard()" #trigger>
+          Buscar
+        </button>
+      </form>
+
+      @if(isLoading) {
+      <div class="spinner">
+        <mat-spinner></mat-spinner>
+      </div>
       }
-    </mat-select>
-  </mat-form-field>
-  <button mat-flat-button color="primary" (click)="searchCard()">Buscar</button>
-  <p>Input: {{ inputValue }}</p>
-  <p>Selected food: {{ selectedValue }}</p>
-</form>
 
-<!-- <div *ngFor="let setCard of setCards">
-  <p>Retorno === {{ setCard.name }}</p>
+      <!--Card Coleções-->
+      @defer (on interaction(trigger)) {
+      <div *ngIf="!isLoading">
+        <mat-accordion class="linked-headers-align" multi>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Coleção </mat-panel-title>
+              <!-- <mat-panel-description>
+                Quant. {{ sizeSetCards }}
+                <mat-icon>account_circle</mat-icon>
+              </mat-panel-description> -->
+            </mat-expansion-panel-header>
+            <div class="panel-body">
+              @for (setCard of setCards.sets; track setCards.code){
+
+              <mat-card class="linked-card" (click)="callSetCreature()">
+                <mat-card-header>
+                  <mat-card-title>{{ setCard.name }}</mat-card-title>
+                  <mat-card-subtitle>{{ setCard.block }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <p>{{ setCard.releaseDate }}</p>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button mat-button (click)="callSetCreature()" #trigger2>
+                    LIKE
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+              }
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      }@placeholder() {
+      <p>Use os filtros para a coleção</p>
+      } @loading(after 200ms; minimum 15s) {
+      <p>Carregando coleção...</p>
+      } @error {
+      <p>Não tem nada</p>
+      }
+
+      <!-- CARDS CRIATURAS-->
+      <!-- @defer (on interaction(trigger2)){
+      <p>asasa</p>
+      }@loading(after 200ms; minimum 5s) {
+      <p>carregando...</p>
+      } @error {
+      <p>Não tem nada</p>
+      } -->
+      <div *ngIf="loadedCre">
+        <mat-accordion class="linked-headers-align panel-body" multi>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Criatura </mat-panel-title>
+              <!-- <mat-panel-description>
+                Quant.
+                <mat-icon>account_circle</mat-icon>
+              </mat-panel-description> -->
+            </mat-expansion-panel-header>
+            <div class="panel-body">
+              <div *ngFor="let set of cardsCreatures.cards">
+                <mat-card class="example-card">
+                  <mat-card-header>
+                    <mat-card-title-group>
+                      <mat-card-title>{{ set.name }}</mat-card-title>
+                      <mat-card-subtitle>{{ set.manaCost }}</mat-card-subtitle>
+                    </mat-card-title-group>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div class="card-creature">
+                      <div class="card-creature-info">
+                        <div>{{ set.colorIdentity }}</div>
+                        <div class="card-creature-info__text">
+                          {{ set.text }}
+                        </div>
+                      </div>
+                      <div class="card-creature-card">
+                        <img [src]="set.imageUrl" alt="{{ set.imageUrl }}" />
+                      </div>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+
+      <!-- <h2 (click)="callSetCreature()" #trigger2>Criaturas</h2> -->
+      <!-- CARDS CRIATURAS-->
+      <!-- @defer (on interaction(trigger2)) { -->
+      <!-- <div>
+        <mat-accordion class="linked-headers-align panel-body" multi>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Criatura </mat-panel-title>
+              <mat-panel-description>
+                Quant.
+                <mat-icon>account_circle</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="panel-body">
+              @for (set of cardsCreatures.cards; track set){
+              <mat-card class="example-card">
+                <mat-card-header>
+                  <mat-card-title-group>
+                    <mat-card-title>{{ set.name }}</mat-card-title>
+                    <mat-card-subtitle>{{ set.manaCost }}</mat-card-subtitle>
+                    <img
+                      mat-card-sm-image
+                      [src]="set.imageUrl"
+                      alt="{{ set.imageUrl }}"
+                    />
+                  </mat-card-title-group>
+                </mat-card-header>
+                <mat-card-content>
+                  <p>{{ set.colorIdentity }}</p>
+                  <p>{{ set.text }}</p>
+                </mat-card-content>
+              </mat-card>
+              }
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>-->
+      <!-- }@placeholder() {
+      <p>Clique no card da coleção</p>
+      } @loading(after 200ms; minimum 5s) {
+      <p>carregando...</p>
+      } @error {
+      <p>Não tem nada</p>
+      } -->
+    </mat-card-content>
+  </mat-card>
+  <br />
+
+  <!-- <div class="panel">
+  <h1>Material - Expansion panels</h1>
+  <details>
+    <summary>
+      <ul>
+        <li class="titleName">Trip name</li>
+        <li class="titleValue">Caribbean cruise</li>
+        <li></li>
+      </ul>
+    </summary>
+    <div class="content">
+      <p>
+        Pellentesque habitant morbi tristique senectus et netus et malesuada
+        fames ac turpis egestas.
+      </p>
+    </div>
+  </details>
+
+  <ul class="list-unstyled">
+    <li><strong>Note:</strong></li>
+    <li>MS Edge status: Under Consideration</li>
+    <li>Enabled in Firefox through the dom.details_element.enabled flag</li>
+    <li>'toggle' event is not supported</li>
+    <li>is not keyboard accessible</li>
+  </ul>
 </div> -->
 
-<div>
-  <!-- <div class="example-action-buttons">
-    <button mat-button (click)="accordion.openAll()">Expand All</button>
-    <button mat-button (click)="accordion.closeAll()">Collapse All</button>
-  </div> -->
-  <mat-accordion class="linked-headers-align" multi>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title> Coleção </mat-panel-title>
-        <mat-panel-description>
-          Type your name and age
-          <mat-icon>account_circle</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+  <!-- <br /><br />
+  <h2 (click)="callSetCreature()" #trigger2>Criaturas</h2>
 
-      @for (setCard of setCards.sets; track setCards.code){
-      <mat-card class="linked-card">
-        <mat-card-header>
-          <mat-card-title>{{ setCard.name }}</mat-card-title>
-          <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <p>This card indeterminates progress bar.</p>
-          <p>longText</p>
-        </mat-card-content>
-      </mat-card>
-      }
-    </mat-expansion-panel>
-  </mat-accordion>
-</div>
+  <div>
+    <h2>Cartas Criaturas de KTK</h2>
+    <br /> -->
 
-<br />
-<br />
-<!--
-<input
-  class="w3-input w3-border w3-padding"
-  type="text"
-  placeholder="Search for names.."
-  id="myInput"
-  onkeyup="myFunction()"
-/>
-
-<table class="w3-table-all w3-margin-top" id="myTable">
-  <tr>
-    <th style="width: 60%">Name</th>
-    <th style="width: 40%">Country</th>
-  </tr>
-  <tr>
-    <td>Alfreds Futterkiste</td>
-    <td>Germany</td>
-  </tr>
-  <tr>
-    <td>Berglunds snabbkop</td>
-    <td>Sweden</td>
-  </tr>
-  <tr>
-    <td>Island Trading</td>
-    <td>UK</td>
-  </tr>
-  <tr>
-    <td>Koniglich Essen</td>
-    <td>Germany</td>
-  </tr>
-  <tr>
-    <td>Laughing Bacchus Winecellars</td>
-    <td>Canada</td>
-  </tr>
-  <tr>
-    <td>Magazzini Alimentari Riuniti</td>
-    <td>Italy</td>
-  </tr>
-  <tr>
-    <td>North/South</td>
-    <td>UK</td>
-  </tr>
-  <tr>
-    <td>Paris specialites</td>
-    <td>France</td>
-  </tr>
-</table> -->
-
-<!-- @for (card of listCards.cards; track listCards.id) {
+  <!-- @for (card of listCards.cards; track listCards.id) {
 {{ card.id }} <br />
 {{ card.name }}<br />
 <img [src]="card.imageUrl" alt="{{ card.name }}" /><br />
@@ -119,3 +212,5 @@
 {{ card.manaCost }}<br />
 <br />
 } -->
+  <!-- </div> -->
+</div>
