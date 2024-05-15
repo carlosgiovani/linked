@@ -1,18 +1,6 @@
 .linked-container{
   padding:20px;
 }
-// .linked-container:after,.linked-container:before,.linked-panel:after,.linked-panel:before,.linked-row:after,.linked-row:before,.linked-row-padding:after,.linked-row-padding:before, .linked-cell-row:before,.linked-cell-row:after,.linked-clear:after,.linked-clear:before,.linked-bar:before,.linked-bar:after{
-//   content:"";
-//   display:table;
-//   clear:both
-// }
-// .linked-input{
-//   padding:8px;
-//   display:block;
-//   border:none;
-//   border-bottom:1px solid #ccc;
-//   width:100%
-// }
 
 //Expansion Panel
 .mat-expansion-panel {
@@ -25,18 +13,6 @@
     flex-wrap: wrap;
 }
 
-// .linked-action-buttons {
-//   padding-bottom: 20px;
-// }
-
-// .linked-headers-align .mat-expansion-panel-header-description {
-//   justify-content: space-between;
-//   align-items: center;
-// }
-
-// .linked-headers-align .mat-mdc-form-field + .mat-mdc-form-field {
-//   margin-left: 8px;
-// }
 .spinner {
   display: flex;
   justify-content: center;
@@ -55,7 +31,6 @@
 }
 .card-creature{
   display: flex;
-  // justify-content: space-between;
   gap: 10px;
   &-info {
     display: flex;
@@ -82,7 +57,6 @@
   }
   .card-creature{
     display: flex;
-    // justify-content: space-between;
     gap: 10px;
     flex-direction: column;
     &-info {

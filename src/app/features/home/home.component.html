@@ -1,5 +1,5 @@
 <div class="linked-container mat-elevation-z888">
-  <p>Lista cards</p>
+  <h2>Lista cards</h2>
   <mat-card>
     <mat-card-content>
       <form class="linked-container22">
@@ -17,8 +17,8 @@
         <mat-form-field>
           <mat-label>Selecionar</mat-label>
           <mat-select [(ngModel)]="selectedValue" name="food">
-            @for (food of foods; track food) {
-            <mat-option [value]="food.value">{{ food.viewValue }}</mat-option>
+            @for (item of itemsSelect; track item) {
+            <mat-option [value]="item.value">{{ item.viewValue }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -40,14 +40,9 @@
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title> Coleção </mat-panel-title>
-              <!-- <mat-panel-description>
-                Quant. {{ sizeSetCards }}
-                <mat-icon>account_circle</mat-icon>
-              </mat-panel-description> -->
             </mat-expansion-panel-header>
             <div class="panel-body">
               @for (setCard of setCards.sets; track setCards.code){
-
               <mat-card class="linked-card" (click)="callSetCreature()">
                 <mat-card-header>
                   <mat-card-title>{{ setCard.name }}</mat-card-title>
@@ -68,30 +63,18 @@
         </mat-accordion>
       </div>
       }@placeholder() {
-      <p>Use os filtros para a coleção</p>
+      <p>Use os filtros para pesquisar a coleção desejada</p>
       } @loading(after 200ms; minimum 15s) {
       <p>Carregando coleção...</p>
       } @error {
-      <p>Não tem nada</p>
+      <p>Não encontramos nada!</p>
       }
 
-      <!-- CARDS CRIATURAS-->
-      <!-- @defer (on interaction(trigger2)){
-      <p>asasa</p>
-      }@loading(after 200ms; minimum 5s) {
-      <p>carregando...</p>
-      } @error {
-      <p>Não tem nada</p>
-      } -->
       <div *ngIf="loadedCre">
         <mat-accordion class="linked-headers-align panel-body" multi>
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title> Criatura </mat-panel-title>
-              <!-- <mat-panel-description>
-                Quant.
-                <mat-icon>account_circle</mat-icon>
-              </mat-panel-description> -->
             </mat-expansion-panel-header>
             <div class="panel-body">
               <div *ngFor="let set of cardsCreatures.cards">
@@ -121,96 +104,7 @@
           </mat-expansion-panel>
         </mat-accordion>
       </div>
-
-      <!-- <h2 (click)="callSetCreature()" #trigger2>Criaturas</h2> -->
-      <!-- CARDS CRIATURAS-->
-      <!-- @defer (on interaction(trigger2)) { -->
-      <!-- <div>
-        <mat-accordion class="linked-headers-align panel-body" multi>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title> Criatura </mat-panel-title>
-              <mat-panel-description>
-                Quant.
-                <mat-icon>account_circle</mat-icon>
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div class="panel-body">
-              @for (set of cardsCreatures.cards; track set){
-              <mat-card class="example-card">
-                <mat-card-header>
-                  <mat-card-title-group>
-                    <mat-card-title>{{ set.name }}</mat-card-title>
-                    <mat-card-subtitle>{{ set.manaCost }}</mat-card-subtitle>
-                    <img
-                      mat-card-sm-image
-                      [src]="set.imageUrl"
-                      alt="{{ set.imageUrl }}"
-                    />
-                  </mat-card-title-group>
-                </mat-card-header>
-                <mat-card-content>
-                  <p>{{ set.colorIdentity }}</p>
-                  <p>{{ set.text }}</p>
-                </mat-card-content>
-              </mat-card>
-              }
-            </div>
-          </mat-expansion-panel>
-        </mat-accordion>
-      </div>-->
-      <!-- }@placeholder() {
-      <p>Clique no card da coleção</p>
-      } @loading(after 200ms; minimum 5s) {
-      <p>carregando...</p>
-      } @error {
-      <p>Não tem nada</p>
-      } -->
     </mat-card-content>
   </mat-card>
   <br />
-
-  <!-- <div class="panel">
-  <h1>Material - Expansion panels</h1>
-  <details>
-    <summary>
-      <ul>
-        <li class="titleName">Trip name</li>
-        <li class="titleValue">Caribbean cruise</li>
-        <li></li>
-      </ul>
-    </summary>
-    <div class="content">
-      <p>
-        Pellentesque habitant morbi tristique senectus et netus et malesuada
-        fames ac turpis egestas.
-      </p>
-    </div>
-  </details>
-
-  <ul class="list-unstyled">
-    <li><strong>Note:</strong></li>
-    <li>MS Edge status: Under Consideration</li>
-    <li>Enabled in Firefox through the dom.details_element.enabled flag</li>
-    <li>'toggle' event is not supported</li>
-    <li>is not keyboard accessible</li>
-  </ul>
-</div> -->
-
-  <!-- <br /><br />
-  <h2 (click)="callSetCreature()" #trigger2>Criaturas</h2>
-
-  <div>
-    <h2>Cartas Criaturas de KTK</h2>
-    <br /> -->
-
-  <!-- @for (card of listCards.cards; track listCards.id) {
-{{ card.id }} <br />
-{{ card.name }}<br />
-<img [src]="card.imageUrl" alt="{{ card.name }}" /><br />
-{{ card.artist }}<br />
-{{ card.manaCost }}<br />
-<br />
-} -->
-  <!-- </div> -->
 </div>
